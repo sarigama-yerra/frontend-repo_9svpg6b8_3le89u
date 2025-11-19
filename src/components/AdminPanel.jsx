@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 export default function AdminPanel() {
   const base = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+  const token = localStorage.getItem('token')
   const [form, setForm] = useState({ name: '', price: '', category: '', image_url: '', available: true })
   const [list, setList] = useState([])
 
@@ -15,18 +16,18 @@ export default function AdminPanel() {
   const save = async (e) => {
     e.preventDefault()
     const payload = { ...form, price: Number(form.price) }
-    await fetch(`${base}/api/products`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    await fetch(`${base}/api/products`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(payload) })
     setForm({ name: '', price: '', category: '', image_url: '', available: true })
     load()
   }
 
   const toggle = async (id, available) => {
-    await fetch(`${base}/api/products/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ available }) })
+    await fetch(`${base}/api/products/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ available }) })
     load()
   }
 
   const remove = async (id) => {
-    await fetch(`${base}/api/products/${id}`, { method: 'DELETE' })
+    await fetch(`${base}/api/products/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
     load()
   }
 

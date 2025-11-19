@@ -22,7 +22,8 @@ export default function CheckoutSheet({ items, userId = 'demo-user' }) {
       user_id: userId,
       items: items.map(it => ({ product_id: it.product.id, qty: it.qty }))
     }
-    const res = await fetch(`${base}/api/orders/place`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    const token = localStorage.getItem('token')
+    const res = await fetch(`${base}/api/orders/place`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(payload) })
     if (!res.ok) {
       const err = await res.json()
       alert(err.detail?.message || 'Order failed')
